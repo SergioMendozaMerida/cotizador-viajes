@@ -65,10 +65,10 @@ export const HomePage = () => {
                 <FormDatosViaje setDatos={setDatosIngreso} setDatosMaping={setDatosMaping} setCostos={setCostos} gastosFijos={gastosFijos} />
             </div>
             <div className="w-full md:w-1/2">
-                <MapaRuta data={datosMaping} />
+                <CardsCostoViaje datosViaje={datosIngreso} gastosFijos={gastosFijos} costos={costos}></CardsCostoViaje>
             </div>
             <div className="w-full md:w-1/2">
-                <CardsCostoViaje datosViaje={datosIngreso} gastosFijos={gastosFijos} costos={costos}></CardsCostoViaje>
+                <MapaRuta data={datosMaping} />
             </div>
         </div>
     )
