@@ -1,5 +1,5 @@
 import { useEffect, useState, type Dispatch, type SetStateAction } from "react"
-import type { CoordenadasViaje, IngresoDatosViaje, Coordenada, RouteData, Costos } from "../interfaces/datosViaje"
+import type { CoordenadasViaje, IngresoDatosViaje, Coordenada, RouteData, Costos } from "../../interfaces/datosViaje"
 
 interface Porps{
     setDatos: Dispatch<SetStateAction<IngresoDatosViaje>>

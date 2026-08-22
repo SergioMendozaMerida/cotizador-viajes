@@ -5,7 +5,7 @@ import L from 'leaflet';
 // Corrección para los íconos predeterminados de Leaflet en React
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
-import type { RouteData } from '../interfaces/datosViaje';
+import type { RouteData } from '../../interfaces/datosViaje';
 
 const DefaultIcon = L.icon({
   iconUrl: icon,

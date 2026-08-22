@@ -1,4 +1,4 @@
-import type { Costos, IngresoDatosViaje } from "../interfaces/datosViaje"
+import type { Costos, IngresoDatosViaje } from "../../interfaces/datosViaje"
 
 const precioCombustible = 11
 

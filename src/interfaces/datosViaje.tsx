@@ -42,3 +42,13 @@ export interface Costos {
     viaticosChofer: number,
     reservaRiesgo: number,
 };
+
+export interface GastosFijos {
+    kmPorLitro: number,
+    depreciacionKm: number,
+    choferPorDia: number,
+    viaticosChoferDia: number,
+    reservaPorRiesgoDia: number,
+    precioCombustible: number,
+    utilidad: number
+}

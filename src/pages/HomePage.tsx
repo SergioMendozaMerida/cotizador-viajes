@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react"
 import { type RouteData, type IngresoDatosViaje, type Costos } from "../interfaces/datosViaje"
-import { FormDatosViaje } from "../componentes/formDatosViaje"
-import { MapaRuta } from "../componentes/mapa"
-import { CardsCostoViaje } from "../componentes/cardCostoViaje"
+import { FormDatosViaje } from "../componentes/cotizadorAdmin/formDatosViaje"
+import { MapaRuta } from "../componentes/cotizadorAdmin/mapa"
+import { CardsCostoViaje } from "../componentes/cotizadorAdmin/cardCostoViaje"
+import { supabase } from "../lib/supabaseClient"
 
-const gastosFijos = {
+/*const gastosFijos = {
     kmPorLitro: 7.3,
     depreciacionKm: 3,
     choferPorDia: 200,
@@ -12,9 +13,19 @@ const gastosFijos = {
     reservaPorRiesgoDia: 50,
     precioCombustible: 11,
     utilidad: 0.20
-}
+}*/
 
 export const HomePage = () => {
+    const [gastosFijos, setGastosFijos] = useState({
+    kmPorLitro: 7.3,
+    depreciacionKm: 3,
+    choferPorDia: 200,
+    viaticosChoferDia: 100,
+    reservaPorRiesgoDia: 50,
+    precioCombustible: 11,
+    utilidad: 0.20
+})
+
     const [datosIngreso, setDatosIngreso] = useState<IngresoDatosViaje>({
         partida: "",
         destino: "",
@@ -56,7 +67,21 @@ export const HomePage = () => {
     })
 
     useEffect(() => {
-        //console.log(datosIngreso)
+        const fetchGastos = async () => {
+        const { data, error } = await supabase
+            .from('gastosFijos') // Nombre de tu tabla en Supabase
+            .select('*')
+            .limit(1)
+            .maybeSingle();
+
+        if (error) {
+            console.error('Error cargando gastos:', error.message);
+        } else if (data) {
+            setGastosFijos(await data);
+        }
+        };
+
+        fetchGastos();
     },[datosIngreso])
 
     return(
