@@ -96,12 +96,21 @@ export const FormDatosViaje = ({setDatos, setDatosMaping, setCostos, gastosFijos
             rutaGeometry: geometry
         })
 
+        setDatos((prev) => ({
+            ...prev,
+            kilimetros: distancia/1000
+        }))
+
         setDatosViaje((prev) => ({
             ...prev,
             kilimetros: distancia/1000
         }))
 
         setDatos(datosViaje)
+        setDatos((prev) => ({
+            ...prev,
+            kilimetros: distancia/1000
+        }))
 
         setCoordenadasViaje((datosAnteriores) => ({
             ...datosAnteriores,

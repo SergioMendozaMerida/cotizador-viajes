@@ -10,7 +10,8 @@ const gastosFijos = {
     choferPorDia: 200,
     viaticosChoferDia: 100,
     reservaPorRiesgoDia: 50,
-    precioCombustible: 11
+    precioCombustible: 11,
+    utilidad: 0.20
 }
 
 export const HomePage = () => {

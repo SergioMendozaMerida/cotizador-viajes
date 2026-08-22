@@ -1,16 +1,23 @@
-import type { IngresoDatosViaje } from "../interfaces/datosViaje"
+import type { Costos, IngresoDatosViaje } from "../interfaces/datosViaje"
 
 const precioCombustible = 11
 
 interface Props {
     datosViaje: IngresoDatosViaje
     gastosFijos: any
-    costos: any
+    costos: Costos
 }
 
 export const CardsCostoViaje = ({datosViaje, gastosFijos, costos}: Props) => {
 
     //const costoTotal = Object.values(costos).reduce((acc, curr) => acc + curr, 0);
+
+    const costoViaje = (costos.combustible + costos.depreciacion + costos.salarioChofer + costos.viaticosChofer
+        + costos.reservaRiesgo
+    )
+
+    const utilidad = (costoViaje * gastosFijos.utilidad)
+    const totalACobrar = costoViaje + utilidad
 
     return (
         <div className="mx-auto my-10 w-[min(100%-2rem,42rem)] overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 text-left shadow-xl shadow-slate-200/70">
@@ -102,17 +109,34 @@ export const CardsCostoViaje = ({datosViaje, gastosFijos, costos}: Props) => {
             </div>
             </div>
 
-            {/* Banner con el Total General */}
-            <div className="mt-6 flex items-center justify-between rounded-xl border border-teal-200 bg-teal-50/80 p-4 sm:p-5">
-            <div>
-                <span className="block text-xs font-bold uppercase tracking-wider text-teal-800">
+            {/* Resumen financiero */}
+            <div className="mt-6 grid gap-3 sm:grid-cols-3">
+            <div className="rounded-xl border border-slate-200 bg-slate-100 p-4">
+                <span className="block text-xs font-bold uppercase tracking-wider text-slate-600">
                 Costo Total Operativo
                 </span>
-                <span className="text-xs text-teal-600">Suma estimada de insumos y servicios</span>
+                <span className="mt-2 block text-xl font-extrabold text-slate-900">
+                Q{costoViaje.toFixed(2)}
+                </span>
             </div>
-            <span className="text-2xl font-extrabold text-teal-900 sm:text-3xl">
-                Q{/*costoTotal.toFixed(2)*/}
-            </span>
+
+            <div className="rounded-xl border border-amber-200 bg-amber-50 p-4">
+                <span className="block text-xs font-bold uppercase tracking-wider text-amber-800">
+                Utilidad ({(gastosFijos.utilidad * 100).toFixed(0)}%)
+                </span>
+                <span className="mt-2 block text-xl font-extrabold text-amber-900">
+                Q{utilidad.toFixed(2)}
+                </span>
+            </div>
+
+            <div className="rounded-xl border border-teal-200 bg-teal-50/80 p-4 sm:p-5">
+                <span className="block text-xs font-bold uppercase tracking-wider text-teal-800">
+                Total a Cobrar
+                </span>
+                <span className="mt-2 block text-2xl font-extrabold text-teal-900 sm:text-3xl">
+                Q{totalACobrar.toFixed(2)}
+                </span>
+            </div>
             </div>
         </div>
         </div>
