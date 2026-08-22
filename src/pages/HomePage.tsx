@@ -70,9 +70,6 @@ export const HomePage = () => {
             <div className="w-full md:w-1/2">
                 <CardsCostoViaje datosViaje={datosIngreso} gastosFijos={gastosFijos} costos={costos}></CardsCostoViaje>
             </div>
-            <div className="w-full md:w-1/2">
-                <MapaRuta data={datosMaping} />
-            </div>
         </div>
     )
 }
