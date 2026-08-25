@@ -34,9 +34,19 @@ export const FormDatosViaje = ({setDatos, setDatosMaping, setCostos, gastosFijos
     const [noRuta, setNoRuta] = useState(0)
     const [cantidadDeRutas, setCantidadDeRutas] =useState(0)
 
-    const cambiarRuta = () => {
-        setNoRuta(noRuta+1)
-        obtenerDatosMapra()
+    const cambiarRutaSiguiente = () => {
+        if (noRuta < cantidadDeRutas - 1) {
+            const nuevaRuta = noRuta + 1;
+            setNoRuta(nuevaRuta);
+            obtenerDatosMapra(nuevaRuta); // Le pasas la nueva ruta directamente
+        }
+    }
+    const cambiarRutaAnterior = () => {
+    if (noRuta > 0) {
+            const nuevaRuta = noRuta - 1;
+            setNoRuta(nuevaRuta);
+            obtenerDatosMapra(nuevaRuta); // Le pasas la nueva ruta directamente
+        }
     }
 
     const obtenerCoordenadas = async (nombreUbicacion: string):Promise<Coordenada> => {
@@ -86,7 +96,7 @@ export const FormDatosViaje = ({setDatos, setDatosMaping, setCostos, gastosFijos
         }))
     }
 
-    const obtenerDatosMapra = async () => {
+    const obtenerDatosMapra = async (nuevaRuta: number) => {
 
         const coordenadasPartida: Coordenada = await obtenerCoordenadas(datosViaje.partida)
         const coordenadasDestino: Coordenada = await obtenerCoordenadas(datosViaje.destino)
@@ -95,14 +105,14 @@ export const FormDatosViaje = ({setDatos, setDatosMaping, setCostos, gastosFijos
 
         setCantidadDeRutas(await ruta.routes.length)
 
-        let distancia = ruta.routes[noRuta].distance
+        let distancia = ruta.routes[nuevaRuta].distance
 
         if (viajeRedondo) {
-            distancia = ruta.routes[noRuta].distance * 2 
+            distancia = ruta.routes[nuevaRuta].distance * 2 
         }
 
-        const tiempo = ruta.routes[noRuta].duration
-        const geometry = ruta.routes[noRuta].geometry
+        const tiempo = ruta.routes[nuevaRuta].duration
+        const geometry = ruta.routes[nuevaRuta].geometry
         console.log(ruta)
 
         setDatosMaping({
@@ -112,11 +122,6 @@ export const FormDatosViaje = ({setDatos, setDatosMaping, setCostos, gastosFijos
             distanciaKilometros: distancia/1000,
             rutaGeometry: geometry
         })
-
-        setDatosViaje((prev) => ({
-            ...prev,
-            kilimetros: distancia/1000
-        }))
 
         setDatos(datosViaje)
         setDatos((prev) => ({
@@ -137,8 +142,6 @@ export const FormDatosViaje = ({setDatos, setDatosMaping, setCostos, gastosFijos
 
         const litrosCombustible = (distancia/1000) / gastosFijos.kmPorLitro
 
-        console.log(litrosCombustible, gastosFijos.precioCombustible)
-
         setCostos({
             litrosCombustible: (distancia/1000) / gastosFijos.kmPorLitro,
             combustible: litrosCombustible * gastosFijos.precioCombustible,
@@ -151,8 +154,8 @@ export const FormDatosViaje = ({setDatos, setDatosMaping, setCostos, gastosFijos
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
-
-        obtenerDatosMapra()
+        setNoRuta(0)
+        obtenerDatosMapra(0)
     }
 
     const handleCheckBoxChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -310,14 +313,35 @@ export const FormDatosViaje = ({setDatos, setDatosMaping, setCostos, gastosFijos
                 </button>
             </div>
             </div>
+        </form>
             {
                 cantidadDeRutas > 1 &&
-                <div>
-                <button onClick={cambiarRuta}>{"<"}</button>
-                <button onClick={cambiarRuta}>{">"}</button>
+                <div className="mt-5 flex flex-col gap-4 rounded-xl border border-teal-100 bg-teal-50/70 px-4 py-4 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:px-5">
+                    <div>
+                        <p className="text-sm font-semibold text-slate-800">Hemos encontrado más de una ruta para tu destino.</p>
+                        <p className="mt-1 text-xs text-slate-500">Selecciona la opción que prefieras para cotizar.</p>
+                    </div>
+                    <div className="flex items-center gap-3 self-end sm:self-auto">
+                        <span className="min-w-16 text-center text-sm font-semibold text-teal-800" aria-live="polite">
+                            Ruta {noRuta + 1} de {cantidadDeRutas}
+                        </span>
+                        <button
+                            type="button"
+                            aria-label="Ver ruta anterior"
+                            disabled={noRuta === 0}
+                    onClick={cambiarRutaAnterior}
+                            className="flex h-9 w-9 items-center justify-center rounded-lg border border-teal-200 bg-white text-lg font-semibold text-teal-700 shadow-sm transition hover:border-teal-400 hover:bg-teal-100 focus:outline-none focus:ring-4 focus:ring-teal-500/20 disabled:cursor-not-allowed disabled:opacity-40"
+                        >{"<"}</button>
+                        <button
+                            type="button"
+                            aria-label="Ver ruta siguiente"
+                            disabled={noRuta === cantidadDeRutas - 1}
+                    onClick={cambiarRutaSiguiente}
+                            className="flex h-9 w-9 items-center justify-center rounded-lg bg-teal-600 text-lg font-semibold text-white shadow-sm transition hover:bg-teal-700 focus:outline-none focus:ring-4 focus:ring-teal-500/20 disabled:cursor-not-allowed disabled:opacity-40"
+                        >{">"}</button>
+                    </div>
                 </div>
             }
-        </form>
         </>
     )
 }
