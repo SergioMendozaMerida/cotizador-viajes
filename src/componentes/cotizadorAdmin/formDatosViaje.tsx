@@ -1,91 +1,18 @@
-import { useEffect, useState, type ChangeEvent, type Dispatch, type SetStateAction } from "react"
-import type { CoordenadasViaje, IngresoDatosViaje, Coordenada, RouteData, Costos } from "../../interfaces/datosViaje"
+import { type ChangeEvent, type Dispatch, type SetStateAction } from "react"
+import type { IngresoDatosViaje } from "../../interfaces/datosViaje"
 
 interface Porps{
-    setDatos: Dispatch<SetStateAction<IngresoDatosViaje>>
-    setDatosMaping: Dispatch<SetStateAction<RouteData>>
-    setCostos: Dispatch<SetStateAction<Costos>>
-    gastosFijos: any
+    obtenerDatosMapa: (nuevaRuta: number) => void
+    setViajeRedondo: Dispatch<SetStateAction<boolean>>
+    setNoRuta: Dispatch<SetStateAction<number>>
+    viajeRedondo: boolean
+    datosViaje: IngresoDatosViaje
+    setDatosViaje: Dispatch<SetStateAction<IngresoDatosViaje>>
 }
 
-export const FormDatosViaje = ({setDatos, setDatosMaping, setCostos, gastosFijos}: Porps) => {
-
-    const [datosViaje, setDatosViaje] = useState<IngresoDatosViaje>({
-        partida: "",
-        destino: "",
-        dias: 1,
-        cotizante: "",
-        pasajeros: 1,
-        kilimetros: 0,
-        honorariosPiloto: 0,
-        viaticosPiloto: 0
-    })
-    const [coordenadasViaje, setCoordenadasViaje] = useState<CoordenadasViaje>({
-        coordenadasPartida: {latitud: "", longitud: ""},
-        coordenadasDestino: {latitud: "", longitud: ""},
-        nombrePartida: "",
-        nombreDestino: "",
-        tiempoEstimado: 0,
-        distanciaKilometros: 0,
-        rutaGeometry: []
-    })
-
-    const [viajeRedondo, setViajeRedndo] = useState(false)
-    const [noRuta, setNoRuta] = useState(0)
-    const [cantidadDeRutas, setCantidadDeRutas] =useState(0)
-
-    const cambiarRutaSiguiente = () => {
-        if (noRuta < cantidadDeRutas - 1) {
-            const nuevaRuta = noRuta + 1;
-            setNoRuta(nuevaRuta);
-            obtenerDatosMapra(nuevaRuta); // Le pasas la nueva ruta directamente
-        }
-    }
-    const cambiarRutaAnterior = () => {
-    if (noRuta > 0) {
-            const nuevaRuta = noRuta - 1;
-            setNoRuta(nuevaRuta);
-            obtenerDatosMapra(nuevaRuta); // Le pasas la nueva ruta directamente
-        }
-    }
-
-    const obtenerCoordenadas = async (nombreUbicacion: string):Promise<Coordenada> => {
-            try {
-                const respuesta = await fetch(`https://nominatim.openstreetmap.org/search?q=${nombreUbicacion}&format=json&limit=1`, {
-                    headers: {'User-Agent': 'CotizadorViajesExpres/1.0'}
-                })
-
-                const data = await respuesta.json()
-                if (data.length === 0){
-                    throw new Error(`No se encontró la ubicación: "${nombreUbicacion}"`)
-                }
-
-                const coordenada: Coordenada = {latitud: data[0].lat, longitud: data[0].lon}
-                console.log(coordenada)
-
-                return coordenada
-            }
-            catch (err) {
-                console.error("Error al obtener coordenadas", err)
-                return {latitud: "no encontrada", longitud: "no encontrada"}
-            }
-    }
-
-    const obtenerRuta = async(partida: Coordenada, destino: Coordenada) => {
-        try {
-            const respuesta = await fetch(`https://router.project-osrm.org/route/v1/driving/${partida.longitud},${partida.latitud};${destino.longitud},${destino.latitud}?overview=full&geometries=geojson&alternatives=true`)
-            const ruta = await respuesta.json()
-
-            if(!respuesta.ok){
-                throw new Error('Error al obtener la ruta '+ respuesta.status)
-            }
-            console.log(ruta)
-            return ruta
-        }
-        catch (err){
-            console.error('Error al obtener la ruta: ', err)
-        }
-    } 
+export const FormDatosViaje = ({obtenerDatosMapa, setViajeRedondo, viajeRedondo, setNoRuta,
+    datosViaje, setDatosViaje
+}: Porps) => {
 
     const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = event.target
@@ -96,70 +23,14 @@ export const FormDatosViaje = ({setDatos, setDatosMaping, setCostos, gastosFijos
         }))
     }
 
-    const obtenerDatosMapra = async (nuevaRuta: number) => {
-
-        const coordenadasPartida: Coordenada = await obtenerCoordenadas(datosViaje.partida)
-        const coordenadasDestino: Coordenada = await obtenerCoordenadas(datosViaje.destino)
-
-        const ruta = await obtenerRuta(coordenadasPartida, coordenadasDestino)
-
-        setCantidadDeRutas(await ruta.routes.length)
-
-        let distancia = ruta.routes[nuevaRuta].distance
-
-        if (viajeRedondo) {
-            distancia = ruta.routes[nuevaRuta].distance * 2 
-        }
-
-        const tiempo = ruta.routes[nuevaRuta].duration
-        const geometry = ruta.routes[nuevaRuta].geometry
-        console.log(ruta)
-
-        setDatosMaping({
-            coordenadasPartida: {longitud: coordenadasPartida.longitud, latitud: coordenadasPartida.latitud},
-            coordenadasDestino: {longitud: coordenadasDestino.longitud, latitud: coordenadasDestino.latitud},
-            tiempoEstimado: tiempo/60/60,
-            distanciaKilometros: distancia/1000,
-            rutaGeometry: geometry
-        })
-
-        setDatos(datosViaje)
-        setDatos((prev) => ({
-            ...prev,
-            kilimetros: distancia/1000
-        }))
-
-        setCoordenadasViaje((datosAnteriores) => ({
-            ...datosAnteriores,
-            nombrePartida: datosViaje.partida,
-            nombreDestino: datosViaje.destino,
-            coordenadasPartida: coordenadasPartida,
-            coordenadasDestino: coordenadasDestino,
-            distanciaKilometros: distancia/1000,
-            tiempoEstimado: tiempo/60/60,
-            rutaGeometry: geometry
-        }))
-
-        const litrosCombustible = (distancia/1000) / gastosFijos.kmPorLitro
-
-        setCostos({
-            litrosCombustible: (distancia/1000) / gastosFijos.kmPorLitro,
-            combustible: litrosCombustible * gastosFijos.precioCombustible,
-            depreciacion: (distancia/1000) * gastosFijos.depreciacionKm,
-            salarioChofer: datosViaje.honorariosPiloto,
-            viaticosChofer: datosViaje.viaticosPiloto,
-            reservaRiesgo: gastosFijos.reservaPorRiesgoDia * datosViaje.dias
-        })
-    }
-
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
         setNoRuta(0)
-        obtenerDatosMapra(0)
+        obtenerDatosMapa(0)
     }
 
     const handleCheckBoxChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setViajeRedndo(e.target.checked)
+        setViajeRedondo(e.target.checked)
     }
 
     return(
@@ -314,34 +185,6 @@ export const FormDatosViaje = ({setDatos, setDatosMaping, setCostos, gastosFijos
             </div>
             </div>
         </form>
-            {
-                cantidadDeRutas > 1 &&
-                <div className="mt-5 flex flex-col gap-4 rounded-xl border border-teal-100 bg-teal-50/70 px-4 py-4 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:px-5">
-                    <div>
-                        <p className="text-sm font-semibold text-slate-800">Hemos encontrado más de una ruta para tu destino.</p>
-                        <p className="mt-1 text-xs text-slate-500">Selecciona la opción que prefieras para cotizar.</p>
-                    </div>
-                    <div className="flex items-center gap-3 self-end sm:self-auto">
-                        <span className="min-w-16 text-center text-sm font-semibold text-teal-800" aria-live="polite">
-                            Ruta {noRuta + 1} de {cantidadDeRutas}
-                        </span>
-                        <button
-                            type="button"
-                            aria-label="Ver ruta anterior"
-                            disabled={noRuta === 0}
-                    onClick={cambiarRutaAnterior}
-                            className="flex h-9 w-9 items-center justify-center rounded-lg border border-teal-200 bg-white text-lg font-semibold text-teal-700 shadow-sm transition hover:border-teal-400 hover:bg-teal-100 focus:outline-none focus:ring-4 focus:ring-teal-500/20 disabled:cursor-not-allowed disabled:opacity-40"
-                        >{"<"}</button>
-                        <button
-                            type="button"
-                            aria-label="Ver ruta siguiente"
-                            disabled={noRuta === cantidadDeRutas - 1}
-                    onClick={cambiarRutaSiguiente}
-                            className="flex h-9 w-9 items-center justify-center rounded-lg bg-teal-600 text-lg font-semibold text-white shadow-sm transition hover:bg-teal-700 focus:outline-none focus:ring-4 focus:ring-teal-500/20 disabled:cursor-not-allowed disabled:opacity-40"
-                        >{">"}</button>
-                    </div>
-                </div>
-            }
         </>
     )
 }
