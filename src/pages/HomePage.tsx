@@ -32,7 +32,9 @@ export const HomePage = () => {
         dias: 1,
         cotizante: "",
         pasajeros: 1,
-        kilimetros: 0
+        kilimetros: 0,
+        honorariosPiloto: 0,
+        viaticosPiloto: 0
     })
 
     const [costos, setCostos] = useState<Costos>({

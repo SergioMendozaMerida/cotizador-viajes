@@ -4,7 +4,9 @@ export interface IngresoDatosViaje {
     dias: number,
     cotizante: string,
     pasajeros: number,
-    kilimetros: number
+    kilimetros: number,
+    honorariosPiloto: number,
+    viaticosPiloto: number
 }
 
 export interface Coordenada {

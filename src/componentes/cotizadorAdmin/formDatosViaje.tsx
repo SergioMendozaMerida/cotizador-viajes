@@ -1,4 +1,4 @@
-import { useEffect, useState, type Dispatch, type SetStateAction } from "react"
+import { useEffect, useState, type ChangeEvent, type Dispatch, type SetStateAction } from "react"
 import type { CoordenadasViaje, IngresoDatosViaje, Coordenada, RouteData, Costos } from "../../interfaces/datosViaje"
 
 interface Porps{
@@ -16,7 +16,9 @@ export const FormDatosViaje = ({setDatos, setDatosMaping, setCostos, gastosFijos
         dias: 1,
         cotizante: "",
         pasajeros: 1,
-        kilimetros: 0
+        kilimetros: 0,
+        honorariosPiloto: 0,
+        viaticosPiloto: 0
     })
     const [coordenadasViaje, setCoordenadasViaje] = useState<CoordenadasViaje>({
         coordenadasPartida: {latitud: "", longitud: ""},
@@ -27,6 +29,15 @@ export const FormDatosViaje = ({setDatos, setDatosMaping, setCostos, gastosFijos
         distanciaKilometros: 0,
         rutaGeometry: []
     })
+
+    const [viajeRedondo, setViajeRedndo] = useState(false)
+    const [noRuta, setNoRuta] = useState(0)
+    const [cantidadDeRutas, setCantidadDeRutas] =useState(0)
+
+    const cambiarRuta = () => {
+        setNoRuta(noRuta+1)
+        obtenerDatosMapra()
+    }
 
     const obtenerCoordenadas = async (nombreUbicacion: string):Promise<Coordenada> => {
             try {
@@ -52,13 +63,13 @@ export const FormDatosViaje = ({setDatos, setDatosMaping, setCostos, gastosFijos
 
     const obtenerRuta = async(partida: Coordenada, destino: Coordenada) => {
         try {
-            const respuesta = await fetch(`https://router.project-osrm.org/route/v1/driving/${partida.longitud},${partida.latitud};${destino.longitud},${destino.latitud}?overview=full&geometries=geojson`)
+            const respuesta = await fetch(`https://router.project-osrm.org/route/v1/driving/${partida.longitud},${partida.latitud};${destino.longitud},${destino.latitud}?overview=full&geometries=geojson&alternatives=true`)
             const ruta = await respuesta.json()
 
             if(!respuesta.ok){
                 throw new Error('Error al obtener la ruta '+ respuesta.status)
             }
-
+            console.log(ruta)
             return ruta
         }
         catch (err){
@@ -71,21 +82,27 @@ export const FormDatosViaje = ({setDatos, setDatosMaping, setCostos, gastosFijos
 
         setDatosViaje((datosAnteriores) => ({
             ...datosAnteriores,
-            [name]: name === "dias" || name === "pasajeros" ? Number(value) : value
+            [name]: name === "dias" || name === "pasajeros" || name === "honorariosPiloto" || name === "viaticosPiloto" ? Number(value) : value
         }))
     }
 
-    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault()
+    const obtenerDatosMapra = async () => {
 
         const coordenadasPartida: Coordenada = await obtenerCoordenadas(datosViaje.partida)
         const coordenadasDestino: Coordenada = await obtenerCoordenadas(datosViaje.destino)
 
         const ruta = await obtenerRuta(coordenadasPartida, coordenadasDestino)
 
-        const distancia = ruta.routes[0].distance
-        const tiempo = ruta.routes[0].duration
-        const geometry = ruta.routes[0].geometry
+        setCantidadDeRutas(await ruta.routes.length)
+
+        let distancia = ruta.routes[noRuta].distance
+
+        if (viajeRedondo) {
+            distancia = ruta.routes[noRuta].distance * 2 
+        }
+
+        const tiempo = ruta.routes[noRuta].duration
+        const geometry = ruta.routes[noRuta].geometry
         console.log(ruta)
 
         setDatosMaping({
@@ -95,11 +112,6 @@ export const FormDatosViaje = ({setDatos, setDatosMaping, setCostos, gastosFijos
             distanciaKilometros: distancia/1000,
             rutaGeometry: geometry
         })
-
-        setDatos((prev) => ({
-            ...prev,
-            kilimetros: distancia/1000
-        }))
 
         setDatosViaje((prev) => ({
             ...prev,
@@ -125,22 +137,30 @@ export const FormDatosViaje = ({setDatos, setDatosMaping, setCostos, gastosFijos
 
         const litrosCombustible = (distancia/1000) / gastosFijos.kmPorLitro
 
+        console.log(litrosCombustible, gastosFijos.precioCombustible)
+
         setCostos({
             litrosCombustible: (distancia/1000) / gastosFijos.kmPorLitro,
             combustible: litrosCombustible * gastosFijos.precioCombustible,
             depreciacion: (distancia/1000) * gastosFijos.depreciacionKm,
-            salarioChofer: gastosFijos.choferPorDia * datosViaje.dias,
-            viaticosChofer: gastosFijos.viaticosChoferDia * datosViaje.dias,
+            salarioChofer: datosViaje.honorariosPiloto,
+            viaticosChofer: datosViaje.viaticosPiloto,
             reservaRiesgo: gastosFijos.reservaPorRiesgoDia * datosViaje.dias
         })
     }
 
-    useEffect(() => {
-        //console.log('Respuesta de coordenadas de viaje')
-        console.log(coordenadasViaje)
-    },[coordenadasViaje])
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault()
+
+        obtenerDatosMapra()
+    }
+
+    const handleCheckBoxChange = (e: ChangeEvent<HTMLInputElement>) => {
+        setViajeRedndo(e.target.checked)
+    }
 
     return(
+        <>
         <form
             onSubmit={handleSubmit}
             className="mx-auto my-10 w-[min(100%-2rem,42rem)] overflow-hidden rounded-2xl border border-slate-200 bg-white text-left shadow-xl shadow-slate-200/70"
@@ -235,6 +255,52 @@ export const FormDatosViaje = ({setDatos, setDatosMaping, setCostos, gastosFijos
                 />
             </div>
 
+            <div>
+                <label className="mb-2 block text-sm font-semibold text-slate-700" htmlFor="honorariosPiloto">
+                    Honorarios del piloto
+                </label>
+                <input
+                    id="honorariosPiloto"
+                    name="honorariosPiloto"
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value={datosViaje.honorariosPiloto}
+                    onChange={handleChange}
+                    required
+                    className="w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/15"
+                />
+            </div>
+
+            <div>
+                <label className="mb-2 block text-sm font-semibold text-slate-700" htmlFor="viaticosPiloto">
+                    Viáticos del piloto
+                </label>
+                <input
+                    id="viaticosPiloto"
+                    name="viaticosPiloto"
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value={datosViaje.viaticosPiloto}
+                    onChange={handleChange}
+                    required
+                    className="w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/15"
+                />
+            </div>
+            <div className="flex items-center">
+                <label className="flex cursor-pointer items-center gap-3 text-sm font-medium text-slate-700" htmlFor="viajeRedondo">
+                <input
+                    id="viajeRedondo"
+                    type="checkbox"
+                    checked={viajeRedondo}
+                    onChange={handleCheckBoxChange}
+                    className="h-5 w-5 cursor-pointer rounded border-slate-300 bg-slate-100 text-teal-600 focus:ring-2 focus:ring-teal-500"
+                />
+                    ¿Viaje ida y vuelta?
+                </label>
+            </div>
+
             <div className="sm:col-span-2 sm:flex sm:justify-end">
                 <button
                     type="submit"
@@ -244,6 +310,14 @@ export const FormDatosViaje = ({setDatos, setDatosMaping, setCostos, gastosFijos
                 </button>
             </div>
             </div>
+            {
+                cantidadDeRutas > 1 &&
+                <div>
+                <button onClick={cambiarRuta}>{"<"}</button>
+                <button onClick={cambiarRuta}>{">"}</button>
+                </div>
+            }
         </form>
+        </>
     )
 }

@@ -1,7 +1,5 @@
 import type { Costos, IngresoDatosViaje } from "../../interfaces/datosViaje"
 
-const precioCombustible = 11
-
 interface Props {
     datosViaje: IngresoDatosViaje
     gastosFijos: any
@@ -60,7 +58,7 @@ export const CardsCostoViaje = ({datosViaje, gastosFijos, costos}: Props) => {
                 Q{costos.combustible.toFixed(2)}
                 </span>
                 <span className="mt-1 block text-xs text-slate-400">
-                ~{costos.litrosCombustible.toFixed(1)} L (Q{precioCombustible}/L)
+                ~{costos.litrosCombustible.toFixed(1)} L (Q{gastosFijos.precioCombustible}/L)
                 </span>
             </div>
 
