@@ -7,6 +7,7 @@ export interface IngresoDatosViaje {
     kilimetros: number,
     honorariosPiloto: number,
     viaticosPiloto: number
+    fondoDeReserva: number
 }
 
 export interface Coordenada {

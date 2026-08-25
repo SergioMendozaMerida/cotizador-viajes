@@ -43,8 +43,8 @@ export const HomePage = () => {
         datosViaje,
         setDatosViaje,
         gastosFijos,
-        setDatosIngreso,
-        datosIngreso
+        //setDatosIngreso,
+        //datosIngreso
     } = useCotizadorViaje()
 
     const obtenerDatosMapa = async (nuevaRuta: number) => {
@@ -74,8 +74,12 @@ export const HomePage = () => {
             rutaGeometry: geometry
         })
 
-        setDatosIngreso(datosViaje)
+        /*setDatosIngreso(datosViaje)
         setDatosIngreso((prev) => ({
+            ...prev,
+            kilimetros: distancia/1000
+        }))*/
+        setDatosViaje((prev) => ({
             ...prev,
             kilimetros: distancia/1000
         }))
@@ -127,7 +131,7 @@ export const HomePage = () => {
                 />
             </div>
             <div className="w-full md:w-1/2">
-                <CardsCostoViaje datosViaje={datosIngreso} gastosFijos={gastosFijos} costos={costos}></CardsCostoViaje>
+                <CardsCostoViaje datosViaje={datosViaje} gastosFijos={gastosFijos} costos={costos}></CardsCostoViaje>
             </div>
             <div className="w-full md:w-1/2">
                 <MapaRuta 

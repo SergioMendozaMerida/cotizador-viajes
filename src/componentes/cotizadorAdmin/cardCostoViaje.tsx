@@ -1,8 +1,8 @@
-import type { Costos, IngresoDatosViaje } from "../../interfaces/datosViaje"
+import type { Costos, GastosFijos, IngresoDatosViaje } from "../../interfaces/datosViaje"
 
 interface Props {
     datosViaje: IngresoDatosViaje
-    gastosFijos: any
+    gastosFijos: GastosFijos
     costos: Costos
 }
 

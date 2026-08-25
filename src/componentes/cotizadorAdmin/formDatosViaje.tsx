@@ -1,7 +1,7 @@
 import { type ChangeEvent, type Dispatch, type SetStateAction } from "react"
 import type { IngresoDatosViaje } from "../../interfaces/datosViaje"
 
-interface Porps{
+interface Props{
     obtenerDatosMapa: (nuevaRuta: number) => void
     setViajeRedondo: Dispatch<SetStateAction<boolean>>
     setNoRuta: Dispatch<SetStateAction<number>>
@@ -12,14 +12,22 @@ interface Porps{
 
 export const FormDatosViaje = ({obtenerDatosMapa, setViajeRedondo, viajeRedondo, setNoRuta,
     datosViaje, setDatosViaje
-}: Porps) => {
+}: Props) => {
 
     const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = event.target
 
+        if (name === "honorariosPiloto" || name === "viaticosPiloto" || name === "dias" || name === "pasajeros") {
+            setDatosViaje((datosAnteriores) => ({
+            ...datosAnteriores,
+            [name]: parseFloat(value)
+            }))
+            return
+        }
+
         setDatosViaje((datosAnteriores) => ({
             ...datosAnteriores,
-            [name]: name === "dias" || name === "pasajeros" || name === "honorariosPiloto" || name === "viaticosPiloto" ? Number(value) : value
+            [name]: value
         }))
     }
 
@@ -155,7 +163,7 @@ export const FormDatosViaje = ({obtenerDatosMapa, setViajeRedondo, viajeRedondo,
                     name="viaticosPiloto"
                     type="number"
                     min="0"
-                    step="0.01"
+                    step="1"
                     value={datosViaje.viaticosPiloto}
                     onChange={handleChange}
                     required

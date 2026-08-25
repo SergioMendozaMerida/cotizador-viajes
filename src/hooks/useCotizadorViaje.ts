@@ -23,10 +23,11 @@ export const useCotizadorViaje = () => {
             pasajeros: 1,
             kilimetros: 0,
             honorariosPiloto: 0,
-            viaticosPiloto: 0
+            viaticosPiloto: 0,
+            fondoDeReserva: 0
         })
 
-        const [datosIngreso, setDatosIngreso] = useState<IngresoDatosViaje>({
+        /*const [datosIngreso, setDatosIngreso] = useState<IngresoDatosViaje>({
             partida: "",
             destino: "",
             dias: 1,
@@ -34,8 +35,9 @@ export const useCotizadorViaje = () => {
             pasajeros: 1,
             kilimetros: 0,
             honorariosPiloto: 0,
-            viaticosPiloto: 0
-        })
+            viaticosPiloto: 0,
+            fondoDeReserva: 0
+        })*/
 
     //FUNCIÓN SOLO PARA OBTENER COORDENADAS DE ACUERDO AL NOMBRE DEL LUGAR.
     const obtenerCoordenadas = async (nombreUbicacion: string):Promise<Coordenada> => {
@@ -92,7 +94,7 @@ export const useCotizadorViaje = () => {
         };
 
         fetchGastos();
-    },[datosIngreso])
+    },[datosViaje])
 
     return{
         datosViaje,
@@ -100,7 +102,8 @@ export const useCotizadorViaje = () => {
         obtenerCoordenadas,
         obtenerRuta,
         gastosFijos,
-        setDatosIngreso,
-        datosIngreso
+        setGastosFijos,
+        //setDatosIngreso,
+        //datosIngreso
     }
 }

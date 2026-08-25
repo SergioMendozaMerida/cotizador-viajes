@@ -1,9 +1,11 @@
 import { useState, type ChangeEvent, type FormEvent } from "react"
 import type { GastosFijos } from "../interfaces/datosViaje"
 import { supabase } from "../lib/supabaseClient";
+import { useCotizadorViaje } from "../hooks/useCotizadorViaje";
 
 export const GastosFijosForm = () => {
-  const [gastos, setGastos] = useState<GastosFijos>({
+
+  /*const [gastosFijos, setGastosFijos] = useState<GastosFijos>({
     kmPorLitro: 0,
     depreciacionKm: 0,
     choferPorDia: 0,
@@ -11,11 +13,13 @@ export const GastosFijosForm = () => {
     reservaPorRiesgoDia: 0,
     precioCombustible: 0,
     utilidad: 0.20,
-  });
+  });*/
+
+  const {gastosFijos, setGastosFijos} = useCotizadorViaje()
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setGastos((prev) => ({
+    setGastosFijos((prev) => ({
       ...prev,
       [name]: value === '' ? 0 : parseFloat(value),
     }));
@@ -23,20 +27,20 @@ export const GastosFijosForm = () => {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    console.log('Gastos guardados:', gastos);
+    console.log('Gastos guardados:', gastosFijos);
 
     const {error} = await supabase 
       .from('gastosFijos')
       .upsert([
         {
           id: 1,
-          kmPorLitro: gastos.kmPorLitro,
-          depreciacionKm: gastos.depreciacionKm,
-          choferPorDia: gastos.choferPorDia,
-          viaticosChoferDia: gastos.viaticosChoferDia,
-          reservaPorRiesgoDia: gastos.reservaPorRiesgoDia,
-          precioCombustible: gastos.precioCombustible,
-          utilidad: gastos.utilidad,
+          kmPorLitro: gastosFijos.kmPorLitro,
+          depreciacionKm: gastosFijos.depreciacionKm,
+          choferPorDia: gastosFijos.choferPorDia,
+          viaticosChoferDia: gastosFijos.viaticosChoferDia,
+          reservaPorRiesgoDia: gastosFijos.reservaPorRiesgoDia,
+          precioCombustible: gastosFijos.precioCombustible,
+          utilidad: gastosFijos.utilidad,
         }
       ])
     if (error) {
@@ -46,29 +50,33 @@ export const GastosFijosForm = () => {
     }
   };
 
+  
+
   return (
-    <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
-      {/* Encabezado */}
-      <div className="mb-6 border-b border-slate-100 pb-4">
-        <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-          <span className="p-2 rounded-lg bg-indigo-50 text-indigo-600">
+    <div className="mx-auto my-10 w-[min(100%-2rem,56rem)] overflow-hidden rounded-2xl border border-slate-200 bg-white text-left shadow-xl shadow-slate-200/70">
+      <div className="border-b border-slate-200 bg-slate-900 px-6 py-7 text-white sm:px-8">
+        <p className="mb-2 text-sm font-semibold uppercase tracking-[0.18em] text-teal-300">
+          Configuración
+        </p>
+        <h2 className="m-0 flex items-center gap-3 text-2xl font-bold tracking-tight text-amber-300 sm:text-3xl">
+          <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-teal-600 text-white shadow-sm">
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
             </svg>
           </span>
           Parámetros de Gastos Fijos
         </h2>
-        <p className="text-sm text-slate-500 mt-1">
+        <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-300">
           Configura los costos base de operación y mantenimiento para el cálculo de tarifas.
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+      <form onSubmit={handleSubmit} className="space-y-6 px-6 py-7 sm:px-8">
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
           
           {/* Rendimiento (Km/L) */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">
+            <label className="mb-2 block text-sm font-semibold text-slate-700">
               Rendimiento (Km por Litro)
             </label>
             <div className="relative">
@@ -77,12 +85,12 @@ export const GastosFijosForm = () => {
                 step="0.01"
                 min="0"
                 name="kmPorLitro"
-                value={gastos.kmPorLitro || ''}
+                value={gastosFijos.kmPorLitro || ''}
                 onChange={handleChange}
                 placeholder="0.00"
-                className="w-full pl-3 pr-12 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none"
+                className="w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-3 pr-16 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/15"
               />
-              <span className="absolute right-3 top-2.5 text-xs font-semibold text-slate-400 bg-slate-200 px-2 py-1 rounded-md">
+              <span className="absolute right-3 top-2.5 rounded-md bg-slate-200 px-2 py-1 text-xs font-semibold text-slate-500">
                 km/L
               </span>
             </div>
@@ -90,24 +98,24 @@ export const GastosFijosForm = () => {
 
           {/* Precio del Combustible */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">
+            <label className="mb-2 block text-sm font-semibold text-slate-700">
               Precio del Combustible
             </label>
             <div className="relative">
               <span className="absolute left-3 top-2.5 text-slate-400 font-medium">
-                $
+                Q
               </span>
               <input
                 type="number"
                 step="0.01"
                 min="0"
                 name="precioCombustible"
-                value={gastos.precioCombustible || ''}
+                value={gastosFijos.precioCombustible || ''}
                 onChange={handleChange}
                 placeholder="0.00"
-                className="w-full pl-8 pr-12 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none"
+                className="w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-3 pl-9 pr-20 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/15"
               />
-              <span className="absolute right-3 top-2.5 text-xs font-semibold text-slate-400 bg-slate-200 px-2 py-1 rounded-md">
+              <span className="absolute right-3 top-2.5 rounded-md bg-slate-200 px-2 py-1 text-xs font-semibold text-slate-500">
                 / Litro
               </span>
             </div>
@@ -120,32 +128,32 @@ export const GastosFijosForm = () => {
             </label>
             <div className="relative">
               <span className="absolute left-3 top-2.5 text-slate-400 font-medium">
-                $
+                Q
               </span>
               <input
                 type="number"
                 step="0.01"
                 min="0"
                 name="depreciacionKm"
-                value={gastos.depreciacionKm || ''}
+                value={gastosFijos.depreciacionKm || ''}
                 onChange={handleChange}
                 placeholder="0.00"
-                className="w-full pl-8 pr-12 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none"
+                className="w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-3 pl-9 pr-16 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/15"
               />
-              <span className="absolute right-3 top-2.5 text-xs font-semibold text-slate-400 bg-slate-200 px-2 py-1 rounded-md">
+              <span className="absolute right-3 top-2.5 rounded-md bg-slate-200 px-2 py-1 text-xs font-semibold text-slate-500">
                 / Km
               </span>
             </div>
           </div>
 
-          {/* Pago Chofer por Día */}
+          {/* Pago Chofer por Día 
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1.5">
               Sueldo Chofer por Día
             </label>
             <div className="relative">
               <span className="absolute left-3 top-2.5 text-slate-400 font-medium">
-                $
+                Q
               </span>
               <input
                 type="number"
@@ -155,22 +163,23 @@ export const GastosFijosForm = () => {
                 value={gastos.choferPorDia || ''}
                 onChange={handleChange}
                 placeholder="0.00"
-                className="w-full pl-8 pr-12 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none"
+                className="w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-3 pl-9 pr-16 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/15"
               />
-              <span className="absolute right-3 top-2.5 text-xs font-semibold text-slate-400 bg-slate-200 px-2 py-1 rounded-md">
+              <span className="absolute right-3 top-2.5 rounded-md bg-slate-200 px-2 py-1 text-xs font-semibold text-slate-500">
                 / Día
               </span>
             </div>
           </div>
+          */}
 
-          {/* Viáticos Chofer por Día */}
+          {/* Viáticos Chofer por Día 
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1.5">
               Viáticos Chofer por Día
             </label>
             <div className="relative">
               <span className="absolute left-3 top-2.5 text-slate-400 font-medium">
-                $
+                Q
               </span>
               <input
                 type="number"
@@ -180,13 +189,13 @@ export const GastosFijosForm = () => {
                 value={gastos.viaticosChoferDia || ''}
                 onChange={handleChange}
                 placeholder="0.00"
-                className="w-full pl-8 pr-12 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none"
+                className="w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-3 pl-9 pr-16 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/15"
               />
-              <span className="absolute right-3 top-2.5 text-xs font-semibold text-slate-400 bg-slate-200 px-2 py-1 rounded-md">
+              <span className="absolute right-3 top-2.5 rounded-md bg-slate-200 px-2 py-1 text-xs font-semibold text-slate-500">
                 / Día
               </span>
             </div>
-          </div>
+          </div>*/}
 
           {/* Reserva por Riesgo por Día */}
           <div>
@@ -195,19 +204,19 @@ export const GastosFijosForm = () => {
             </label>
             <div className="relative">
               <span className="absolute left-3 top-2.5 text-slate-400 font-medium">
-                $
+                Q
               </span>
               <input
                 type="number"
                 step="0.01"
                 min="0"
                 name="reservaPorRiesgoDia"
-                value={gastos.reservaPorRiesgoDia || ''}
+                value={gastosFijos.reservaPorRiesgoDia || ''}
                 onChange={handleChange}
                 placeholder="0.00"
-                className="w-full pl-8 pr-12 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none"
+                className="w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-3 pl-9 pr-16 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/15"
               />
-              <span className="absolute right-3 top-2.5 text-xs font-semibold text-slate-400 bg-slate-200 px-2 py-1 rounded-md">
+              <span className="absolute right-3 top-2.5 rounded-md bg-slate-200 px-2 py-1 text-xs font-semibold text-slate-500">
                 / Día
               </span>
             </div>
@@ -216,7 +225,7 @@ export const GastosFijosForm = () => {
         </div>
 
         {/* Campo Destacado: Porcentaje de Utilidad */}
-        <div className="bg-slate-50 p-4 rounded-xl border border-slate-200/80">
+        <div className="rounded-xl border border-amber-200 bg-amber-50/70 p-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <label className="block text-sm font-semibold text-slate-900">
@@ -233,14 +242,14 @@ export const GastosFijosForm = () => {
                 step="1"
                 min="0"
                 max="100"
-                value={Math.round(gastos.utilidad * 100)}
+                value={Math.round(gastosFijos.utilidad * 100)}
                 onChange={(e) => {
                   const val = parseFloat(e.target.value) || 0;
-                  setGastos((prev) => ({ ...prev, utilidad: val / 100 }));
+                  setGastosFijos((prev) => ({ ...prev, utilidad: val / 100 }));
                 }}
-                className="w-full pl-3 pr-8 py-2 bg-white border border-slate-300 rounded-lg text-slate-900 font-bold text-right focus:ring-2 focus:ring-indigo-500 outline-none"
+                className="w-full rounded-lg border border-amber-200 bg-white py-2 pl-3 pr-8 text-right font-bold text-slate-900 outline-none focus:border-amber-500 focus:ring-4 focus:ring-amber-500/15"
               />
-              <span className="absolute right-3 top-2 text-slate-500 font-bold">
+                <span className="absolute right-3 top-2 font-bold text-amber-700">
                 %
               </span>
             </div>
@@ -248,11 +257,11 @@ export const GastosFijosForm = () => {
         </div>
 
         {/* Botones de Acción */}
-        <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
+        <div className="flex items-center justify-end gap-3 border-t border-slate-200 pt-4">
           <button
             type="button"
             onClick={() =>
-              setGastos({
+              setGastosFijos({
                 kmPorLitro: 0,
                 depreciacionKm: 0,
                 choferPorDia: 0,
@@ -262,14 +271,14 @@ export const GastosFijosForm = () => {
                 utilidad: 0.20,
               })
             }
-            className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-xl transition-colors"
+            className="rounded-lg px-4 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-800"
           >
             Limpiar
           </button>
           
           <button
             type="submit"
-            className="px-6 py-2.5 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 rounded-xl shadow-sm transition-colors flex items-center gap-2"
+            className="flex items-center gap-2 rounded-lg bg-teal-600 px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-teal-600/20 transition-colors hover:bg-teal-700 active:bg-teal-800"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
