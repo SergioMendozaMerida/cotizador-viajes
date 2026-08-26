@@ -80,7 +80,7 @@ export const CardsCostoViaje = ({datosViaje, gastosFijos, costos}: Props) => {
                 Q{costos.salarioChofer.toFixed(2)}
                 </span>
                 <span className="mt-1 block text-xs text-slate-400">
-                Q{gastosFijos.choferPorDia} / día
+                 / viaje
                 </span>
             </div>
 
@@ -91,7 +91,7 @@ export const CardsCostoViaje = ({datosViaje, gastosFijos, costos}: Props) => {
                 Q{costos.viaticosChofer.toFixed(2)}
                 </span>
                 <span className="mt-1 block text-xs text-slate-400">
-                Q{gastosFijos.viaticosChoferDia} / día
+                {/*gastosFijos.viaticosChoferDia*/} / viaje
                 </span>
             </div>
 

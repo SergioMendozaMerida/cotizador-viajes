@@ -1,5 +1,4 @@
-import { useState, type ChangeEvent, type FormEvent } from "react"
-import type { GastosFijos } from "../interfaces/datosViaje"
+import { type ChangeEvent, type FormEvent } from "react"
 import { supabase } from "../lib/supabaseClient";
 import { useCotizadorViaje } from "../hooks/useCotizadorViaje";
 

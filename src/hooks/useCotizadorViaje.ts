@@ -68,6 +68,7 @@ export const useCotizadorViaje = () => {
             const ruta = await respuesta.json()
 
             if(!respuesta.ok){
+                alert("Error al obtener la ruta")
                 throw new Error('Error al obtener la ruta '+ respuesta.status)
             }
             console.log(ruta)
