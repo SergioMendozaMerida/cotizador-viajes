@@ -5,31 +5,30 @@ import { NavLink } from 'react-router-dom';
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
-  // Helper para aplicar estilos dinámicos al enlace activo
   const linkClass = ({ isActive }:any) =>
-    `flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+    `flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-colors ${
       isActive
-        ? 'bg-indigo-600 text-white shadow-sm'
-        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+        ? 'bg-teal-600 text-white shadow-sm shadow-teal-600/20'
+        : 'text-slate-600 hover:bg-teal-50 hover:text-teal-800'
     }`;
 
   return (
-    <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+    <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/95 shadow-sm backdrop-blur-md">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex h-14 items-center justify-between">
           
           {/* Logo / Título de la App */}
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold text-lg">
+          <div className="flex items-center gap-3">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-teal-600 text-lg font-bold text-white shadow-sm shadow-teal-600/20">
               C
             </div>
-            <span className="text-slate-900 font-bold text-lg tracking-tight">
+            <span className="text-lg font-bold tracking-tight text-slate-900">
               Camposeco Xpres
             </span>
           </div>
 
           {/* Enlaces para Pantallas Grandes (Desktop) */}
-          <nav className="hidden md:flex items-center gap-2">
+          <nav className="hidden items-center gap-2 md:flex">
             <NavLink to="/" className={linkClass}>
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
@@ -47,10 +46,12 @@ export const Navbar = () => {
           </nav>
 
           {/* Botón de Menú Móvil */}
-          <div className="md:hidden flex items-center">
+          <div className="flex items-center md:hidden">
             <button
+              type="button"
+              aria-label={isOpen ? 'Cerrar menú' : 'Abrir menú'}
               onClick={() => setIsOpen(!isOpen)}
-              className="p-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 focus:outline-none"
+              className="rounded-lg p-2 text-slate-600 transition-colors hover:bg-teal-50 hover:text-teal-800 focus:outline-none focus:ring-4 focus:ring-teal-500/20"
             >
               <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 {isOpen ? (
@@ -67,7 +68,7 @@ export const Navbar = () => {
 
       {/* Menú Desplegable Móvil */}
       {isOpen && (
-        <div className="md:hidden border-t border-slate-200 bg-white px-4 pt-2 pb-4 space-y-1">
+        <div className="space-y-1 border-t border-slate-200 bg-slate-50 px-4 pb-4 pt-2 md:hidden">
           <NavLink to="/" onClick={() => setIsOpen(false)} className={linkClass}>
             Inicio
           </NavLink>

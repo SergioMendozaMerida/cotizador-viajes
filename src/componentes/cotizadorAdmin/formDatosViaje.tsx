@@ -45,23 +45,23 @@ export const FormDatosViaje = ({obtenerDatosMapa, setViajeRedondo, viajeRedondo,
         <>
         <form
             onSubmit={handleSubmit}
-            className="mx-auto my-10 w-[min(100%-2rem,42rem)] overflow-hidden rounded-2xl border border-slate-200 bg-white text-left shadow-xl shadow-slate-200/70"
+            className="mx-auto my-4 w-[min(100%-2rem,42rem)] overflow-hidden rounded-2xl border border-slate-200 bg-white text-left shadow-xl shadow-slate-200/70"
         >
-            <div className="border-b border-slate-200 bg-slate-900 px-6 py-7 text-white sm:px-8">
-                <p className="mb-2 text-sm font-semibold uppercase tracking-[0.18em] text-teal-300">
+            <div className="border-b border-slate-200 bg-slate-900 px-6 py-5 text-white sm:px-8">
+                <p className="mb-1 text-sm font-semibold uppercase tracking-[0.18em] text-teal-300">
                     Cotizador de viajes
                 </p>
                 <h1 className="m-0 text-3xl font-bold tracking-tight text-amber-300 sm:text-4xl">
                     Planea tu próxima aventura
                 </h1>
-                <p className="mt-3 max-w-lg text-sm leading-6 text-slate-300">
+                <p className="mt-2 max-w-lg text-sm leading-6 text-slate-300">
                     Completa los datos del viaje y prepara una cotización a tu medida.
                 </p>
             </div>
 
-            <div className="grid gap-5 px-6 py-7 sm:grid-cols-2 sm:px-8">
+            <div className="grid gap-3 px-6 py-4 sm:grid-cols-2 sm:px-8">
                 <div className="sm:col-span-2">
-                    <label className="mb-2 block text-sm font-semibold text-slate-700" htmlFor="partida">
+                    <label className="mb-1 block text-sm font-semibold text-slate-700" htmlFor="partida">
                         Lugar de partida
                     </label>
                 <input
@@ -71,12 +71,12 @@ export const FormDatosViaje = ({obtenerDatosMapa, setViajeRedondo, viajeRedondo,
                     value={datosViaje.partida}
                     onChange={handleChange}
                     required
-                    className="w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/15"
+                    className="w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-2 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/15"
                 />
             </div>
 
             <div>
-                <label className="mb-2 block text-sm font-semibold text-slate-700" htmlFor="destino">
+                <label className="mb-1 block text-sm font-semibold text-slate-700" htmlFor="destino">
                     Destino
                 </label>
                 <input
@@ -86,12 +86,12 @@ export const FormDatosViaje = ({obtenerDatosMapa, setViajeRedondo, viajeRedondo,
                     value={datosViaje.destino}
                     onChange={handleChange}
                     required
-                    className="w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/15"
+                    className="w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-2 text-slate-900 outline-none transition focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/15"
                 />
             </div>
 
             <div>
-                <label className="mb-2 block text-sm font-semibold text-slate-700" htmlFor="dias">
+                <label className="mb-1 block text-sm font-semibold text-slate-700" htmlFor="dias">
                     Días de viaje
                 </label>
                 <input
@@ -102,12 +102,12 @@ export const FormDatosViaje = ({obtenerDatosMapa, setViajeRedondo, viajeRedondo,
                     value={datosViaje.dias}
                     onChange={handleChange}
                     required
-                    className="w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/15"
+                    className="w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-2 text-slate-900 outline-none transition focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/15"
                 />
             </div>
 
             <div className="sm:col-span-2">
-                <label className="mb-2 block text-sm font-semibold text-slate-700" htmlFor="cotizante">
+                <label className="mb-1 block text-sm font-semibold text-slate-700" htmlFor="cotizante">
                     Nombre del cotizante
                 </label>
                 <input
@@ -117,12 +117,12 @@ export const FormDatosViaje = ({obtenerDatosMapa, setViajeRedondo, viajeRedondo,
                     value={datosViaje.cotizante}
                     onChange={handleChange}
                     required
-                    className="w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/15"
+                    className="w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-2 text-slate-900 outline-none transition focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/15"
                 />
             </div>
 
             <div>
-                <label className="mb-2 block text-sm font-semibold text-slate-700" htmlFor="pasajeros">
+                <label className="mb-1 block text-sm font-semibold text-slate-700" htmlFor="pasajeros">
                     Cantidad de pasajeros
                 </label>
                 <input
@@ -133,12 +133,12 @@ export const FormDatosViaje = ({obtenerDatosMapa, setViajeRedondo, viajeRedondo,
                     value={datosViaje.pasajeros}
                     onChange={handleChange}
                     required
-                    className="w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/15"
+                    className="w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-2 text-slate-900 outline-none transition focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/15"
                 />
             </div>
 
             <div>
-                <label className="mb-2 block text-sm font-semibold text-slate-700" htmlFor="honorariosPiloto">
+                <label className="mb-1 block text-sm font-semibold text-slate-700" htmlFor="honorariosPiloto">
                     Honorarios del piloto
                 </label>
                 <input
@@ -150,12 +150,12 @@ export const FormDatosViaje = ({obtenerDatosMapa, setViajeRedondo, viajeRedondo,
                     value={datosViaje.honorariosPiloto}
                     onChange={handleChange}
                     required
-                    className="w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/15"
+                    className="w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-2 text-slate-900 outline-none transition focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/15"
                 />
             </div>
 
             <div>
-                <label className="mb-2 block text-sm font-semibold text-slate-700" htmlFor="viaticosPiloto">
+                <label className="mb-1 block text-sm font-semibold text-slate-700" htmlFor="viaticosPiloto">
                     Viáticos del piloto
                 </label>
                 <input
@@ -167,7 +167,7 @@ export const FormDatosViaje = ({obtenerDatosMapa, setViajeRedondo, viajeRedondo,
                     value={datosViaje.viaticosPiloto}
                     onChange={handleChange}
                     required
-                    className="w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/15"
+                    className="w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-2 text-slate-900 outline-none transition focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/15"
                 />
             </div>
             <div className="flex items-center">
@@ -186,7 +186,7 @@ export const FormDatosViaje = ({obtenerDatosMapa, setViajeRedondo, viajeRedondo,
             <div className="sm:col-span-2 sm:flex sm:justify-end">
                 <button
                     type="submit"
-                    className="w-full rounded-lg bg-teal-600 px-5 py-3 font-semibold text-white shadow-lg shadow-teal-600/20 transition hover:bg-teal-700 focus:outline-none focus:ring-4 focus:ring-teal-500/30 active:translate-y-px sm:w-auto"
+                    className="w-full rounded-lg bg-teal-600 px-5 py-2 font-semibold text-white shadow-lg shadow-teal-600/20 transition hover:bg-teal-700 focus:outline-none focus:ring-4 focus:ring-teal-500/30 active:translate-y-px sm:w-auto"
                 >
                     Cotizar viaje
                 </button>
